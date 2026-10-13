@@ -1,0 +1,182 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-sunset: #f28c62;
+  --color-blush: #d9a0a4;
+  --color-midnight: #17294c;
+  --color-sand: #f5d9b5;
+  --color-mist: #788dad;
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-deep: var(--deep);
+  --color-accent: var(--accent);
+  --font-serif: var(--font-instrument), "Times New Roman", serif;
+  --font-sans: var(--font-manrope), system-ui, sans-serif;
+}
+
+/* ---------- Atmosphere tokens (day = sunset, night = deep blue) ---------- */
+:root {
+  --paper: #f5d9b5;
+  --paper-2: #efc7a3;
+  --ink: #17294c;
+  --deep: #17294c;
+  --accent: #b34a26; /* sunset orange darkened for AA contrast on sand */
+  --story: #d9a0a4;
+
+  --sky-0: #17294c;
+  --sky-1: #5d5a92;
+  --sky-2: #d9a0a4;
+  --sky-3: #f28c62;
+  --sky-4: #f7c089;
+  --sun-core: #fff0d2;
+  --sun-glow: #f28c62;
+  --far: #b27ba0;
+  --mid: #8c5b8a;
+  --sea-0: #f6a47f;
+  --sea-1: #8c6a9a;
+  --sea-2: #1f2f5a;
+  --fore: #141a3d;
+  --stars: 0;
+  --veil: 0;
+  --hero-end: #0a1228;
+  color-scheme: light;
+}
+
+:root[data-theme="night"] {
+  --paper: #101c38;
+  --paper-2: #0c1630;
+  --ink: #f5d9b5;
+  --deep: #0a1228;
+  --accent: #f28c62;
+  --story: #16264f;
+
+  --sky-0: #050a1c;
+  --sky-1: #101f42;
+  --sky-2: #2e426f;
+  --sky-3: #6b7ba3;
+  --sky-4: #d9a0a4;
+  --sun-core: #f6ead2;
+  --sun-glow: #788dad;
+  --far: #1f3160;
+  --mid: #16254f;
+  --sea-0: #3f527f;
+  --sea-1: #14244c;
+  --sea-2: #060c20;
+  --fore: #040815;
+  --stars: 1;
+  --veil: 0.38;
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  overflow-x: clip;
+  transition: background-color 0.9s ease, color 0.9s ease;
+}
+
+::selection {
+  background: #f28c62;
+  color: #17294c;
+}
+
+:focus-visible {
+  outline: 2px solid #f28c62;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+section[id] {
+  scroll-margin-top: 4rem;
+}
+
+/* SVG scene containers fill their box */
+[data-scene] svg,
+.fill-svg svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Night veil laid over destination art, cheaper than filters */
+.veil::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, #0a1228, #17294c);
+  opacity: var(--veil);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  transition: opacity 0.9s ease;
+}
+
+stop {
+  transition: stop-color 1.2s ease, stop-opacity 1.2s ease;
+}
+
+.below-fold {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------- Motion ---------- */
+@keyframes bob {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, -14px, 0); }
+}
+@keyframes drift {
+  from { transform: translate3d(-3%, 0, 0); }
+  to { transform: translate3d(3%, 0, 0); }
+}
+@keyframes shimmer {
+  0%, 100% { opacity: 0.25; transform: scaleX(0.9); }
+  50% { opacity: 0.7; transform: scaleX(1.05); }
+}
+@keyframes flow {
+  to { stroke-dashoffset: -40; }
+}
+@keyframes ping {
+  0% { transform: scale(0.6); opacity: 0.7; }
+  80%, 100% { transform: scale(2.1); opacity: 0; }
+}
+@keyframes cue {
+  0% { transform: scaleY(0); transform-origin: top; }
+  45% { transform: scaleY(1); transform-origin: top; }
+  55% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+
+.anim-bob { animation: bob 9s ease-in-out infinite alternate; }
+.anim-drift { animation: drift 40s ease-in-out infinite alternate; }
+.anim-shimmer { animation: shimmer 6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.anim-flow { animation: flow 2.4s linear infinite; }
+.anim-ping { animation: ping 2.8s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+.anim-cue { animation: cue 2.6s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
+.anim-twinkle { animation: twinkle 5s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
